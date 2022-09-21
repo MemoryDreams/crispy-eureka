@@ -1,11 +1,7 @@
 let sideBlocks = 0;
 let field = document.getElementById("playfield");
-
-
-
-
-
-
+let player = ["cross", "zero"];
+let currentIndex = player.indexOf('cross');
 
 function drawField(pix) {
     document.documentElement.style.setProperty('--number', pix);
@@ -14,11 +10,35 @@ function drawField(pix) {
         for (let l = 1; l <= pix; l++) {
             let div = document.createElement('div');
             div.className = 'cell';
-            div.setAttribute('id', i + ' ' + l);
+            div.setAttribute('id', i + ' ' + l); //id is the coordinate of each square.
+            div.addEventListener("click", function(){ playerAction(); });
             field.appendChild(div);
         }
     }
     return 0;
 }
 
-drawField(5);
+function fillCell(player, coord) {
+    let image = document.createElement('img');
+    switch (player) {
+        case 'cross':
+            image.src = "cross.png";
+            break;
+        case 'zero':
+            image.src = "zero.png";
+            break;
+    }
+    document.getElementById(coord).appendChild(image);
+}
+
+function playerAction() {
+    let coord = event.target.id; //this is how we know where our cell is and can pass this knowladge to other functions.
+    fillCell(player[currentIndex], coord);
+    if (currentIndex + 1 >= player.length) {
+        currentIndex = 0;
+    } else {
+        currentIndex++;
+    }
+}
+
+drawField(3);
