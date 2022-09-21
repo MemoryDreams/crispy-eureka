@@ -81,11 +81,22 @@ function resultMessage(result) {
 }
 
 function reset() {
-    document.getElementById('result').remove();
+    if (exists(document.getElementById('result'))){
+        document.getElementById('result').remove();
+    }
     while (field.childNodes.length > 1) {
         field.querySelector('div').remove();
     }
     drawField(3);
+    moves = 0;
+}
+
+function exists(element) {
+    if(typeof(element) != 'undefined' && element != null){
+        return true;
+    } else{
+        return false;
+    }
 }
 
 drawField(3);

@@ -94,7 +94,7 @@ h1 {
     justify-content: space-evenly;
 }
 
-#result button {
+button {
     background-color: var(--back2);
     border: 1px solid var(--back3);
     width: 70px;
@@ -104,7 +104,7 @@ h1 {
     font-weight: 800;
 }
 
-#result button:hover {
+button:hover {
     background-color: var(--back3);
     border: 1px solid var(--back4);
 }
