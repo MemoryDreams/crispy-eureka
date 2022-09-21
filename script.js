@@ -1,4 +1,5 @@
 let sideBlocks = 0;
+let moves = 0;
 let field = document.getElementById("playfield");
 let player = ["cross", "zero"];
 let currentIndex = player.indexOf('cross');
@@ -32,6 +33,7 @@ function fillCell(player, coord) {
 }
 
 function playerAction() {
+    moves++;
     let coord = event.target.id; //this is how we know where our cell is and can pass this knowladge to other functions.
     if (!isCellEmpty(coord)) {
         return 1
@@ -42,6 +44,9 @@ function playerAction() {
     } else {
         currentIndex++;
     }
+    if (moves === sideBlocks * sideBlocks) {
+        resultMessage("draw");
+    }
 }
 
 function isCellEmpty(coord) {
@@ -50,6 +55,37 @@ function isCellEmpty(coord) {
     } else {
         return false;
     }
+}
+
+function resultMessage(result) {
+    let div = document.createElement('div');
+    div.setAttribute('id', 'result');
+    let message = document.createElement('h2');
+    div.appendChild(message);
+    let button = document.createElement('button');
+    button.addEventListener("click", function(){ reset(); })
+    button.innerText = "Reset";
+    div.appendChild(button);
+    document.querySelector('body').appendChild(div);
+    switch (result) {
+        case "draw":
+            message.innerText = "It's a draw!";
+            break;
+        case "p1":
+            message.innerText = "Player 1 wins!";
+            break;
+        case "p2":
+            message.innerText = "Player 2 wins!";
+            break;
+    }
+}
+
+function reset() {
+    document.getElementById('result').remove();
+    while (field.childNodes.length > 1) {
+        field.querySelector('div').remove();
+    }
+    drawField(3);
 }
 
 drawField(3);
