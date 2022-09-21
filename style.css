@@ -61,7 +61,7 @@ h1 {
     grid-template-rows: repeat(var(--number), 1fr);
 }
 
-.cell {
+#playfield div {
     border: 1px solid var(--front2);
     border-bottom: none;
     border-right: none;
@@ -76,7 +76,7 @@ h1 {
     -moz-user-select: none;
 }
 
-.cell:hover {
+#playfield div:hover {
     background-color: var(--back4);
 }
 
