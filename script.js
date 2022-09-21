@@ -33,11 +33,22 @@ function fillCell(player, coord) {
 
 function playerAction() {
     let coord = event.target.id; //this is how we know where our cell is and can pass this knowladge to other functions.
+    if (!isCellEmpty(coord)) {
+        return 1
+    }
     fillCell(player[currentIndex], coord);
     if (currentIndex + 1 >= player.length) {
         currentIndex = 0;
     } else {
         currentIndex++;
+    }
+}
+
+function isCellEmpty(coord) {
+    if (document.getElementById(coord).childNodes.length === 0) {
+        return true;
+    } else {
+        return false;
     }
 }
 
