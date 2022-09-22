@@ -193,4 +193,4 @@ function checkReverseDiagonally(x, y, item) {
     return (points == sideBlocks - 1);
 }
 
-drawField(3);
+drawField(6);
