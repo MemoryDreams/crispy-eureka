@@ -3,6 +3,8 @@ let moves = 0;
 let field = document.getElementById("playfield");
 let player = ["cross", "zero"];
 let currentIndex = player.indexOf('cross');
+let gameOn = true;
+let AIisOn = false;
 
 function drawField(pix) {
     document.documentElement.style.setProperty('--number', pix);
@@ -33,11 +35,14 @@ function fillCell(player, coord) {
 }
 
 function playerAction() {
+    if (!gameOn) {
+        return 1;
+    }
     moves++;
     //this is how we know where our cell is and can pass this knowladge to other functions.
     let coord = event.target.id; 
     if (!isCellEmpty(coord)) {
-        return 1
+        return 2
     }
     fillCell(player[currentIndex], coord);
     document.getElementById(coord).className = player[currentIndex];
@@ -46,13 +51,20 @@ function playerAction() {
         resultMessage(player[currentIndex]);
         return 0;
     }
+    if (moves === sideBlocks * sideBlocks) {
+        resultMessage("draw");
+    }
+    changePlayer()
+    if (AIisOn) {
+        computerMove();
+    }
+}
+
+function changePlayer() {
     if (currentIndex + 1 >= player.length) {
         currentIndex = 0;
     } else {
         currentIndex++;
-    }
-    if (moves === sideBlocks * sideBlocks) {
-        resultMessage("draw");
     }
 }
 
@@ -75,6 +87,7 @@ function resultMessage(result) {
     div.appendChild(button);
     document.querySelector('body').appendChild(div);
     console.log(result);
+    gameOn = false;
     switch (result) {
         case "draw":
             message.innerText = "It's a draw!";
@@ -89,6 +102,7 @@ function resultMessage(result) {
 }
 
 function reset() {
+    gameOn = true;
     if (exists(document.getElementById('result'))){
         document.getElementById('result').remove();
     }
@@ -122,10 +136,6 @@ function considerWinning(coord, item) {
     let ident = coord.trim().split(/\s+/);
     let y = parseInt(ident[0]);
     let x = parseInt(ident[1]);
-    //check horizontally
-    // if (checkHorizontally(x, y, item)) {
-    //     return true;
-    // }
     switch (true) {
         case (checkHorizontally(x, y, item)):
             return true;
@@ -193,4 +203,25 @@ function checkReverseDiagonally(x, y, item) {
     return (points == sideBlocks - 1);
 }
 
-drawField(6);
+function computerMove(weapon, difficulty) {
+    let coord = '';
+    switch (difficulty) {
+        case "easy":
+            coord = randomMove();
+            break;
+        case "mid":
+            coord = midiumMove();
+            break;
+        case "hard":
+            coord = hardMove();
+            break;
+    }
+    fillCell(player[currentIndex], coord);
+    if (considerWinning(coord, player[currentIndex])) {
+        resultMessage(player[currentIndex]);
+        return 0;
+    }
+    changePlayer();
+}
+
+drawField(3);
