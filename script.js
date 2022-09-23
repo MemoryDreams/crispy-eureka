@@ -4,7 +4,8 @@ let field = document.getElementById("playfield");
 let player = ["cross", "zero"];
 let currentIndex = player.indexOf('cross');
 let gameOn = true;
-let AIisOn = false;
+let AIisOn = true;
+let difficulty = "easy";
 
 function drawField(pix) {
     document.documentElement.style.setProperty('--number', pix);
@@ -53,10 +54,20 @@ function playerAction() {
     }
     if (moves === sideBlocks * sideBlocks) {
         resultMessage("draw");
+        return 0;
     }
     changePlayer()
     if (AIisOn) {
-        computerMove();
+        computerMove(player[currentIndex], difficulty);
+        if (considerWinning(coord, player[currentIndex])) {
+            resultMessage(player[currentIndex]);
+            return 0;
+        }
+        if (moves === sideBlocks * sideBlocks) {
+            resultMessage("draw");
+            return 0;
+        }
+        changePlayer();
     }
 }
 
@@ -77,6 +88,7 @@ function isCellEmpty(coord) {
 }
 
 function resultMessage(result) {
+    AIisOn = false;
     let div = document.createElement('div');
     div.setAttribute('id', 'result');
     let message = document.createElement('h2');
@@ -86,7 +98,6 @@ function resultMessage(result) {
     button.innerText = "Reset";
     div.appendChild(button);
     document.querySelector('body').appendChild(div);
-    console.log(result);
     gameOn = false;
     switch (result) {
         case "draw":
@@ -121,6 +132,7 @@ function exists(element) {
     }
 }
 
+//used in check for winning
 function checkCell(coord, item) {
     if (!exists(document.getElementById(coord))) {
         return false;
@@ -128,7 +140,7 @@ function checkCell(coord, item) {
     if (document.getElementById(coord).className == item) {
         return true;
     } else {
-        return false;
+        console.log(item + ' false');
     }
 }
 
@@ -163,7 +175,6 @@ function checkHorizontally(x, y, item) {
 
 function checkVertically(x, y, item) {
     let points = 0;
-    console.log(y + ' ' + x);
     for (let i = 1; i < sideBlocks; i++) {
         if (checkCell((y - i )+ ' ' + x, item)) {
             points++;
@@ -177,7 +188,6 @@ function checkVertically(x, y, item) {
 
 function checkDiagonally(x, y, item) {
     let points = 0;
-    console.log(y + ' ' + x);
     for (let i = 1; i < sideBlocks; i++) {
         if (checkCell((y - i) + ' ' + (x - i), item)) {
             points++;
@@ -191,7 +201,6 @@ function checkDiagonally(x, y, item) {
 
 function checkReverseDiagonally(x, y, item) {
     let points = 0;
-    console.log(y + ' ' + x);
     for (let i = 1; i < sideBlocks; i++) {
         if (checkCell((y - i) + ' ' + (x + i), item)) {
             points++;
@@ -216,12 +225,24 @@ function computerMove(weapon, difficulty) {
             coord = hardMove();
             break;
     }
-    fillCell(player[currentIndex], coord);
-    if (considerWinning(coord, player[currentIndex])) {
-        resultMessage(player[currentIndex]);
-        return 0;
+    fillCell(weapon, coord);
+    console.log(weapon + ' ' + coord);
+}
+
+function randomMove() {
+    let coord = '';
+    while (true) {
+        coord = (getRandomInt(1, sideBlocks)) + ' ' + (getRandomInt(1, sideBlocks));
+        if (isCellEmpty(coord)) {
+            return coord;
+        }
     }
-    changePlayer();
+}
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 drawField(3);
