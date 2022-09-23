@@ -56,6 +56,7 @@ function playerAction() {
         resultMessage("draw");
         return 0;
     }
+    console.log(moves + '^' + sideBlocks * sideBlocks);
     changePlayer()
     if (AIisOn) {
         computerMove(player[currentIndex], difficulty);
@@ -138,9 +139,10 @@ function checkCell(coord, item) {
         return false;
     }
     if (document.getElementById(coord).className == item) {
+        console.log(item + ' true');
         return true;
     } else {
-        console.log(item + ' false');
+        return false;
     }
 }
 
@@ -213,6 +215,7 @@ function checkReverseDiagonally(x, y, item) {
 }
 
 function computerMove(weapon, difficulty) {
+    moves++;
     let coord = '';
     switch (difficulty) {
         case "easy":
@@ -233,6 +236,7 @@ function randomMove() {
     let coord = '';
     while (true) {
         coord = (getRandomInt(1, sideBlocks)) + ' ' + (getRandomInt(1, sideBlocks));
+        console.log(coord);
         if (isCellEmpty(coord)) {
             return coord;
         }
