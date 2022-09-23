@@ -23,6 +23,9 @@ function drawField(pix) {
 
 function fillCell(player, coord) {
     let image = document.createElement('img');
+    if (player == 'zero') {
+        console.log(coord + ' ' + player);
+    }
     switch (player) {
         case 'cross':
             image.src = "cross.png";
@@ -31,7 +34,7 @@ function fillCell(player, coord) {
             image.src = "zero.png";
             break;
     }
-    image.className = player;
+    document.getElementById(coord).className = player;
     document.getElementById(coord).appendChild(image);
 }
 
@@ -46,7 +49,7 @@ function playerAction() {
         return 2
     }
     fillCell(player[currentIndex], coord);
-    document.getElementById(coord).className = player[currentIndex];
+    //document.getElementById(coord).className = player[currentIndex];
     //here we check if the player wins
     if (considerWinning(coord, player[currentIndex])) {
         resultMessage(player[currentIndex]);
@@ -56,18 +59,9 @@ function playerAction() {
         resultMessage("draw");
         return 0;
     }
-    console.log(moves + '^' + sideBlocks * sideBlocks);
     changePlayer()
     if (AIisOn) {
         computerMove(player[currentIndex], difficulty);
-        if (considerWinning(coord, player[currentIndex])) {
-            resultMessage(player[currentIndex]);
-            return 0;
-        }
-        if (moves === sideBlocks * sideBlocks) {
-            resultMessage("draw");
-            return 0;
-        }
         changePlayer();
     }
 }
@@ -89,7 +83,6 @@ function isCellEmpty(coord) {
 }
 
 function resultMessage(result) {
-    AIisOn = false;
     let div = document.createElement('div');
     div.setAttribute('id', 'result');
     let message = document.createElement('h2');
@@ -139,7 +132,6 @@ function checkCell(coord, item) {
         return false;
     }
     if (document.getElementById(coord).className == item) {
-        console.log(item + ' true');
         return true;
     } else {
         return false;
@@ -172,20 +164,21 @@ function checkHorizontally(x, y, item) {
             points++;
         }
     }
-    return (points == sideBlocks - 1);
+    return (points === sideBlocks - 1);
 }
 
 function checkVertically(x, y, item) {
     let points = 0;
-    for (let i = 1; i < sideBlocks; i++) {
+    let i = 0;
+    for (i = 1; i < sideBlocks; i++) {
         if (checkCell((y - i )+ ' ' + x, item)) {
             points++;
         }
         if (checkCell((y + i) + ' ' + x, item)) {
             points++;
         }
-        }
-    return (points == sideBlocks - 1);
+    }
+    return (points === sideBlocks - 1);
 }
 
 function checkDiagonally(x, y, item) {
@@ -197,8 +190,8 @@ function checkDiagonally(x, y, item) {
         if (checkCell((y + i) + ' ' + (x + i), item)) {
             points++;
         }
-        }
-    return (points == sideBlocks - 1);
+    }
+    return (points === sideBlocks - 1);
 }
 
 function checkReverseDiagonally(x, y, item) {
@@ -210,8 +203,8 @@ function checkReverseDiagonally(x, y, item) {
         if (checkCell((y + i) + ' ' + (x - i), item)) {
             points++;
         }
-        }
-    return (points == sideBlocks - 1);
+    }
+    return (points === sideBlocks - 1);
 }
 
 function computerMove(weapon, difficulty) {
@@ -228,15 +221,22 @@ function computerMove(weapon, difficulty) {
             coord = hardMove();
             break;
     }
+    console.log(weapon);
     fillCell(weapon, coord);
-    console.log(weapon + ' ' + coord);
+    if (considerWinning(coord, player[currentIndex])) {
+        resultMessage(player[currentIndex]);
+        return 0;
+    }
+    if (moves === sideBlocks * sideBlocks) {
+        resultMessage("draw");
+        return 0;
+    }
 }
 
 function randomMove() {
     let coord = '';
     while (true) {
         coord = (getRandomInt(1, sideBlocks)) + ' ' + (getRandomInt(1, sideBlocks));
-        console.log(coord);
         if (isCellEmpty(coord)) {
             return coord;
         }
