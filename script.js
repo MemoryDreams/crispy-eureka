@@ -5,7 +5,7 @@ let player = ["cross", "zero"];
 let currentIndex = player.indexOf('cross');
 let gameOn = true;
 let AIisOn = true;
-let difficulty = "easy";
+let difficulty = "mid";
 
 function drawField(pix) {
     document.documentElement.style.setProperty('--number', pix);
@@ -243,10 +243,57 @@ function randomMove() {
     }
 }
 
+function midiumMove() {
+    let coord = randomMove();
+    let ident;
+    let y;
+    let x;
+    changePlayer();
+    while (true) {
+        ident = coord.trim().split(/\s+/);
+        y = parseInt(ident[0]);
+        x = parseInt(ident[1]);
+        if (checkNeighbor(x, y, player[currentIndex])) {
+            changePlayer();
+            return coord;
+        }
+        coord = randomMove();
+    }
+}
+
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function checkNeighbor(x, y, item) {
+    let points = 0;
+    if (checkCell((y - 1) + ' ' + (x + 1), item)) {
+        points++;
+    }
+    if (checkCell((y + 1) + ' ' + (x - 1), item)) {
+        points++;
+    }
+    if (checkCell((y - 1) + ' ' + (x - 1), item)) {
+        points++;
+    }
+    if (checkCell((y + 1) + ' ' + (x + 1), item)) {
+        points++;
+    }
+    if (checkCell(y + ' ' + (x + 1), item)) {
+        points++;
+    }
+    if (checkCell(y + ' ' + (x - 1), item)) {
+        points++;
+    }
+    if (checkCell((y - 1) + ' ' + x, item)) {
+        points++;
+    }
+    if (checkCell((y + 1) + ' ' + x, item)) {
+        points++;
+    }
+    return (points >= 1);
 }
 
 drawField(3);
